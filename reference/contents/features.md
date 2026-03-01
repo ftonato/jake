@@ -3,6 +3,35 @@ intro: Features
 tagline: Jake features and comparison
 ---
 
-Lorem ipsum dolor sit amet, **consectetur** adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla _pariatur_. Excepteur sint occaecat cupidatat non proident, sunt in culpa `qui` officia deserunt mollit anim id est laborum.
+`jake` (crasis for "just make") is a [Make](https://en.wikipedia.org/wiki/Make_(software))-like task executor for Unix-based operating systems.
+It is based on TOML task definitions (stored in a file called `jakefile.toml`) and can execute commands by resolving their dependencies and forwarding additional options from the command line.
 
-Hello, this is another paragraph.
+### Features
+
+- **Simple TOML syntax** for task definition: no `.PHONY` declarations, no spacing rules
+- **Dependency resolution** with circular dependency detection
+- **Extra arguments** can be passed as options directly from the command line
+- **Default task execution** when no task name is specified
+- **Composite commands** support (e.g. `cat README.md | grep Features` or `cd src/ && pwd`)
+- **Subdirectory awareness**: tasks can be invoked from any subdirectory of the directory containing `jakefile.toml`
+
+### Comparison
+
+The table below compares `jake` against [`just`](https://github.com/casey/just) and [`make`](https://en.wikipedia.org/wiki/Make_(software)) across key features:
+
+| Feature                          | jake | just | make |
+|----------------------------------|------|------|------|
+| Dependency graph resolution      | ✅   | ❌    | ✅  |
+| Circular dependency detection    | ✅   | ❌    | ❌   |
+| Extra arguments / options        | ✅   | ✅   | ⚠️  |
+| Default task execution           | ✅   | ✅   | ✅  |
+| Composite commands               | ✅   | ✅   | ✅  |
+| Subdirectory invocation          | ✅   | ✅   | ❌   |
+| Simple, readable syntax          | ✅   | ✅   | ❌   |
+| No special spacing rules         | ✅   | ✅   | ❌   |
+| Read .env                        | ❌    | ✅   | ❌   |
+| List available commands          | ❌    | ✅   | ❌   |
+| Recipes written in arbitrary languages | ❌ | ✅   | ❌   |
+
+
+⚠️ `make` supports passing variables from the command line but not named options in the same ergonomic way.
