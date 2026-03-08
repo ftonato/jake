@@ -8,12 +8,15 @@ It is based on TOML task definitions (stored in a file called `jakefile.toml`) a
 
 ### Features
 
+- **Boilerplate initialization**: with the `--init` option, you can create a boilerplate `jakefile.toml`
 - **Simple TOML syntax** for task definition: no `.PHONY` declarations, no spacing rules
 - **Dependency resolution** with circular dependency detection
 - **Extra arguments** can be passed as options directly from the command line
 - **Default task execution** when no task name is specified
 - **Composite commands** support (e.g. `cat README.md | grep Features` or `cd src/ && pwd`)
 - **Subdirectory awareness**: tasks can be invoked from any subdirectory of the directory containing `jakefile.toml`
+- **Listing tasks**: tasks can be listed with the `--list` flag
+- **Loading .env files**: `.env` files can be loaded for task execution with the `--env` flag
 
 ### Comparison
 
@@ -32,6 +35,7 @@ The table below compares `jake` against [`just`](https://github.com/casey/just) 
 | Read .env                        | ✅    | ✅   | ❌   |
 | List available commands          | ✅    | ✅   | ❌   |
 | Recipes written in arbitrary languages | ❌ | ✅   | ❌   |
+| Initialize a boilerplate jake/just/makefile | ✅ | ❌   | ❌   |
 
 
 ⚠️ `make` supports passing variables from the command line but not named options in the same ergonomic way.
