@@ -135,6 +135,19 @@ jake say-bye
 'bye'
 ```
 
+**Dry-run (print commands without running them)**
+
+Use `--dry-run` to print each command that would be run, in order, without executing anything. Useful for debugging or auditing task graphs.
+
+```bash
+jake say-bye --dry-run
+```
+```text
+echo 'hello'
+echo 'hello back'
+echo 'bye'
+```
+
 **Pass additional options to a task**
 
 You can forward extra flags to the underlying command using `--options`:

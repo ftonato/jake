@@ -79,13 +79,13 @@ fn task_to_task_node(available_tasks: &Map<String, Value>, task: &str) -> Result
             ));
         }
         let mut dependencies: Vec<String> = vec![];
-        if task_table.contains_key("depends_on")
-            && let Some(depends) = task_table["depends_on"].as_array()
-        {
-            for value in depends {
-                match value.as_str() {
-                    Some(c) => dependencies.push(c.to_string()),
-                    None => continue,
+        if task_table.contains_key("depends_on") {
+            if let Some(depends) = task_table["depends_on"].as_array() {
+                for value in depends {
+                    match value.as_str() {
+                        Some(c) => dependencies.push(c.to_string()),
+                        None => continue,
+                    }
                 }
             }
         }

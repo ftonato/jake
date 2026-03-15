@@ -14,6 +14,20 @@ impl CommandExecutor {
     }
 }
 
+/// Executor that prints the command and does not run it (for --dry-run).
+pub struct DryRunExecutor;
+
+impl Executor for DryRunExecutor {
+    fn execute(&self, main_command: &str, args: Vec<&str>, _load_env: bool) -> anyhow::Result<()> {
+        let full_command = std::iter::once(main_command)
+            .chain(args.into_iter())
+            .collect::<Vec<_>>()
+            .join(" ");
+        println!("{}", full_command);
+        Ok(())
+    }
+}
+
 impl Executor for CommandExecutor {
     fn execute(&self, main_command: &str, args: Vec<&str>, load_env: bool) -> anyhow::Result<()> {
         let mut command_args = args;
