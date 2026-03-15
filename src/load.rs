@@ -79,13 +79,13 @@ fn task_to_task_node(available_tasks: &Map<String, Value>, task: &str) -> Result
             ));
         }
         let mut dependencies: Vec<String> = vec![];
-        if task_table.contains_key("depends_on")
-            && let Some(depends) = task_table["depends_on"].as_array()
-        {
-            for value in depends {
-                match value.as_str() {
-                    Some(c) => dependencies.push(c.to_string()),
-                    None => continue,
+        if task_table.contains_key("depends_on") {
+            if let Some(depends) = task_table["depends_on"].as_array() {
+                for value in depends {
+                    match value.as_str() {
+                        Some(c) => dependencies.push(c.to_string()),
+                        None => continue,
+                    }
                 }
             }
         }
@@ -219,7 +219,7 @@ pub fn execute_default_command(
 mod tests {
     use serial_test::serial;
 
-    use crate::models::CommandExecutor;
+    use crate::models::{CommandExecutor, DryRunExecutor};
 
     use super::*;
 
@@ -620,5 +620,23 @@ mod tests {
         for task in &expected_tasks {
             assert!(tasks.contains(task))
         }
+    }
+
+    #[test]
+    #[serial]
+    fn test_dry_run_executor_command() {
+        let path = Some("testfiles/jakefile.toml");
+        let executor = DryRunExecutor::new();
+        let result = execute_command(path, "say-hello", "", &executor, false);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    #[serial]
+    fn test_dry_run_executor_default_command() {
+        let path = Some("testfiles/withdefault.toml");
+        let executor = DryRunExecutor::new();
+        let result = execute_default_command(path, "", &executor, false);
+        assert!(result.is_ok());
     }
 }

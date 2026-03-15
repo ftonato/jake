@@ -1,7 +1,7 @@
 use crate::{
     initialize::write_jakefile,
     load::{execute_command, execute_default_command, is_posix_os, list_jakefile_tasks},
-    models::CommandExecutor,
+    models::{CommandExecutor, DryRunExecutor},
     package_json::execute_script,
 };
 use anyhow::anyhow;
@@ -15,7 +15,7 @@ mod package_json;
 
 /// Make-like task executor for Unix-based operating systems
 #[derive(Parser, Debug)]
-#[command(version = "0.6.0")]
+#[command(version = "0.7.0")]
 #[command(name = "jake")]
 #[command(about, long_about = None)]
 struct Args {
@@ -41,6 +41,10 @@ struct Args {
     /// Initialize a Jakefile by providing a list of comma-separated tasks
     #[arg(long, default_value = None)]
     init: Option<String>,
+
+    /// Print commands that would be run without executing them
+    #[arg(long, default_value_t = false)]
+    dry_run: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -60,10 +64,14 @@ fn main() -> anyhow::Result<()> {
         println!("Available tasks:\n- {}\n", task_list);
         return Ok(());
     }
-    let executor = CommandExecutor::new();
+    let executor: Box<dyn models::Executor> = if args.dry_run {
+        Box::new(DryRunExecutor::new())
+    } else {
+        Box::new(CommandExecutor::new())
+    };
     if args.js {
         if let Some(script_name) = args.task {
-            execute_script(None, script_name, args.env, &executor)?;
+            execute_script(None, script_name, args.env, executor.as_ref())?;
         } else {
             return Err(anyhow!(
                 "No script name provided, please provide one or, if you wish to execute the default command from jakefile.toml, do not pass the `--js` flag."
@@ -72,8 +80,8 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
     match args.task {
-        Some(t) => execute_command(None, &t, &args.options, &executor, args.env)?,
-        None => execute_default_command(None, &args.options, &executor, args.env)?,
+        Some(t) => execute_command(None, &t, &args.options, executor.as_ref(), args.env)?,
+        None => execute_default_command(None, &args.options, executor.as_ref(), args.env)?,
     }
     Ok(())
 }

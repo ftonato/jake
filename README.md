@@ -16,6 +16,7 @@ It is based on TOML tasks definition (stored in a file called `jakefile.toml`) a
 - You can list tasks, by passing the `--list` flag
 - You can load `.env` file (in the same working directory or anywhere up in the directory tree), by passing the `--env` flag
 - Execute scripts from a `package.json` file with the `--js` flag.
+- Dry-run mode: `jake --dry-run <task>` prints commands without executing them.
 
 ## Installation
 
@@ -185,6 +186,19 @@ jake dev --js
 ```
 
 You can invoke a script from the directory in which `package.json` is stored and from all its subdirectories.
+
+**Dry-run**
+
+To see which commands would run without executing them:
+
+```bash
+jake say-bye --dry-run
+```
+```text
+echo 'hello'
+echo 'hello back'
+echo 'bye'
+```
 
 ## In GitHub CI/CD
 
